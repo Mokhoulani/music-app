@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "mycoolredirect",
+    "scheme": "music-app",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

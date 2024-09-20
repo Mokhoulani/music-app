@@ -26,12 +26,45 @@ export default function App() {
     },
     discovery
   );
+  let token: string | undefined = "";
 
   useEffect(() => {
     if (response?.type === "success") {
       const { code } = response.params;
+      token = code;
+      fetchArtistID();
     }
   }, [response]);
+
+  const fetchArtistID = async () => {
+    if (token) {
+      console.log("Token exists:", token); // Log the token to ensure it's valid
+      try {
+        const res = await fetch(
+          "https://api.spotify.com/v1/artists/0TnOYISbd1XYRBk9myaseg",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // Bearer token for Spotify API
+              "Content-Type": "application/json", // Ensure correct content-type
+            },
+          }
+        );
+
+        // Check if response is OK (200-level)
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const artistData = await res.json();
+        console.log("Artist data fetched:", artistData); // Log the artist data
+      } catch (error) {
+        console.error("Error fetching artist data:", error); // Handle and log any errors
+      }
+    } else {
+      console.log("No token available. Please authenticate first."); // If token is missing
+    }
+  };
 
   return (
     <SafeAreaView style={{ margin: 40 }}>
