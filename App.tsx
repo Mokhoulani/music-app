@@ -8,6 +8,7 @@ WebBrowser.maybeCompleteAuthSession();
 // Spotify's authorization and token endpoints
 const discovery = {
   authorizationEndpoint: "https://accounts.spotify.com/authorize",
+  tokenEndpoint: "https://accounts.spotify.com/api/token",
 };
 
 export default function App() {
@@ -53,7 +54,7 @@ export default function App() {
       console.error("Error fetching user profile:", error);
     }
   }
-  async function fetchArtistID(token:String){
+  async function fetchArtistID(token: String) {
     if (token) {
       console.log("Token exists:", token); // Log the token to ensure it's valid
       try {
@@ -81,8 +82,7 @@ export default function App() {
     } else {
       console.log("No token available. Please authenticate first."); // If token is missing
     }
-  };
-
+  }
 
   return (
     <SafeAreaView style={{ margin: 40 }}>
