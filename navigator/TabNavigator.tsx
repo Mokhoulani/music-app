@@ -1,20 +1,20 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
-import Home from "../screens/home-screen";
-import Search from "../screens/search-screen";
+import HomeScreen from "../screens/home-screen";
+import SearchScreen from "../screens/search-screen";
 
-export type TabparamsList = {
-  HomeNvigator: undefined;
+export type TabParamsList = {
+  Home: undefined;
   Search: undefined;
 };
 
-const TabNavigator = createBottomTabNavigator<TabparamsList>();
+const Tab = createBottomTabNavigator<TabParamsList>();
 
 export default function BottomTabNavigator() {
   return (
-    <TabNavigator.Navigator>
-      <TabNavigator.Screen name="HomeNvigator" component={Home} />
-      <TabNavigator.Screen name="Search" component={Search} />
-    </TabNavigator.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+    </Tab.Navigator>
   );
 }
