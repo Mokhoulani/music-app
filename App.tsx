@@ -1,5 +1,7 @@
+import { Sound } from "expo-av/build/Audio";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Button,
   Image,
   Pressable,
@@ -15,8 +17,8 @@ import { playSong, stopSong } from "./utils/audioPlayer";
 
 export default function App() {
   const [tracks, setTracks] = useState<Tracks>();
-  const [sound, setSound] = useState();
-  const [token, promptAsync] = useSpotifyAuth();
+  const [sound, setSound] = useState<Sound>();
+  const [token, loading, promptAsync, logout] = useSpotifyAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,22 +34,35 @@ export default function App() {
   }, [token]);
 
   // Function to stop playing
-  const handleStopSong = async (preview_url: string) => {
-    stopSong(await playSong(preview_url));
+  const handleStopSong = async () => {
+    stopSong(sound);
   };
 
   const handlePlaySong = async (preview_url: string) => {
-    playSong(preview_url);
+    const song = await playSong(preview_url);
+    setSound(song);
   };
 
   return (
     <SafeAreaView style={{ margin: 40 }}>
-      <Button
-        title="Login"
-        onPress={() => {
-          promptAsync();
-        }}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : token ? (
+        <Button
+          title="Logout"
+          onPress={() => {
+            logout();
+          }}
+        />
+      ) : (
+        <Button
+          title="Login with Spotify"
+          onPress={() => {
+            promptAsync();
+          }}
+        />
+      )}
+
       <ScrollView>
         {/* Map through each track's items */}
         <View>
@@ -66,9 +81,7 @@ export default function App() {
               <Text onPress={() => handlePlaySong(track.preview_url)}>
                 play song
               </Text>
-              <Text onPress={() => handleStopSong(track.preview_url)}>
-                stop song
-              </Text>
+              <Text onPress={() => handleStopSong()}>stop song</Text>
               {/* Album Image */}
               {track.album.images.length > 0 && (
                 <Image
