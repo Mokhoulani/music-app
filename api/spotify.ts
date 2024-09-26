@@ -1,3 +1,4 @@
+import { Search } from "../types/search";
 import { Tracks } from "../types/track";
 
 // Helper function to make Spotify API requests
@@ -50,6 +51,40 @@ export async function getTopTracks(token: string): Promise<Tracks> {
     "GET",
     token
   );
-  console.log("Top Tracks:", data);
   return data;
 }
+
+// Search for a track by name, album or artist name from Spotify API
+export async function searchSpotify(
+  token: string,
+  query: string,
+  type: string = "track,artist,album"
+): Promise<Search> {
+  const encodedQuery = encodeURIComponent(query);
+  const encodedType = encodeURIComponent(type);
+
+  const url = `https://api.spotify.com/v1/search?q=${encodedQuery}&type=${encodedType}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error("Spotify API Error:", response.status, errorBody);
+    throw new Error(`Spotify API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log("Search Results:", data);
+  return data;
+}
+
+// Usage example:
+// searchSpotify(token, 'Doxy Miles Davis', 'track,artist')
+//   .then(results => console.log(results))
+//   .catch(error => console.error(error));

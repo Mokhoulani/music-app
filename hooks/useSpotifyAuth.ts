@@ -1,4 +1,3 @@
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
@@ -21,6 +20,7 @@ export default function useSpotifyAuth() {
     {
       clientId: "3dff60a9e4374377a72d8980a944aa74",
       scopes: [
+        "user-read-private",
         "user-read-email",
         "user-read-recently-played",
         "user-top-read",

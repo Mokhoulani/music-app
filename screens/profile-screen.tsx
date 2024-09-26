@@ -1,9 +1,20 @@
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { DrawerScreenProps } from "@react-navigation/drawer";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React from "react";
 import { Button, Text, View } from "react-native";
 import { DrawerParamList } from "../navigator/DrawerNavigator";
+import { RootStackParamList } from "../navigator/RootStackNavigator";
+import { TabParamsList } from "../navigator/TabNavigator";
 
-type Props = DrawerScreenProps<DrawerParamList, "Profile">;
+type Props = CompositeScreenProps<
+  DrawerScreenProps<DrawerParamList, "profile">,
+  CompositeScreenProps<
+    BottomTabScreenProps<TabParamsList>,
+    NativeStackScreenProps<RootStackParamList>
+  >
+>;
 
 export default function ProfileScreen({ navigation }: Props) {
   return (
@@ -11,7 +22,7 @@ export default function ProfileScreen({ navigation }: Props) {
       <Text>Profile Screen</Text>
       <Button
         title="Go to Home"
-        onPress={() => navigation.navigate("MainTabs", { screen: "Home" })}
+        onPress={() => navigation.navigate("Home")}
       />
     </View>
   );
