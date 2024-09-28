@@ -7,8 +7,8 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
-  View,
 } from "react-native";
+import { Surface } from "react-native-paper";
 import { getTopTracks } from "../api/spotify";
 import TrackCard from "../components/TrackCard";
 import useSpotifyAuth from "../hooks/useSpotifyAuth";
@@ -26,6 +26,7 @@ export default function HomeScreen({ navigation }: Props) {
     const fetchData = async () => {
       if (token) {
         const datTracks = await getTopTracks(token);
+        setTracks(datTracks.items);
 
         // const searchData = await searchSpotify(token);
       }
@@ -55,7 +56,7 @@ export default function HomeScreen({ navigation }: Props) {
       )}
 
       <ScrollView>
-        <View>
+        <Surface>
           {tracks
             ? tracks.map((item) => (
                 <Pressable
@@ -65,7 +66,7 @@ export default function HomeScreen({ navigation }: Props) {
                 </Pressable>
               ))
             : null}
-        </View>
+        </Surface>
       </ScrollView>
     </SafeAreaView>
   );

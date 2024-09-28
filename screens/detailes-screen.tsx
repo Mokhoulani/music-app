@@ -5,7 +5,7 @@ import { RootStackParamList } from "../navigator/RootStackNavigator";
 import { TabParamsList } from "../navigator/TabNavigator";
 type Props = NativeStackScreenProps<TabParamsList, "Details">;
 
-export default function DetailesScreen({ route }: Props) {
+export default function DetailsScreen({ route }: Props) {
   return (
     <View>
       <Text>{route.params.item.id}</Text>

@@ -32,7 +32,16 @@ export default function DrawerNavigator() {
       <Drawer.Screen
         name="HomeTab"
         component={BottomTabNavigator}
-        options={{ drawerLabel: () => null }}
+        options={({ navigation }) => ({
+          drawerLabel: () => (
+            <MaterialIcons
+              style={{ marginRight: 16 }}
+              name="settings"
+              size={24}
+              onPress={() => navigation.navigate("Settings")}
+            />
+          ),
+        })}
       />
       <Drawer.Screen
         name="SearchTab"
