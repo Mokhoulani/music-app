@@ -3,7 +3,7 @@ import React from "react";
 import ProfileScreen from "../screens/profile-screen";
 
 export type DrawerParamList = {
-  profile: undefined;
+  Profile: undefined;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -11,7 +11,7 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 export default function DrawerNavigator() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="profile" component={ProfileScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   );
 }

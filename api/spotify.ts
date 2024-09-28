@@ -1,5 +1,5 @@
 import { Search } from "../types/search";
-import { Tracks } from "../types/track";
+import { TopTracks, Track } from "../types/track";
 
 // Helper function to make Spotify API requests
 async function fetchWebApi(
@@ -45,12 +45,13 @@ async function fetchWebApi(
 }
 
 // Fetch user's top tracks from Spotify API
-export async function getTopTracks(token: string): Promise<Tracks> {
+export async function getTopTracks(token: string): Promise<TopTracks> {
   const data = await fetchWebApi(
-    "v1/tracks?ids=7ouMYWpwJ422jRcDASZB7P%2C4VqPOruhp5EdPBeR92t6lQ%2C2takcwOaAZWiXQijPHIx7B",
+    "v1/me/top/tracks?time_range=long_term&limit=20",
     "GET",
     token
   );
+  console.log("Top Tracks:", data);
   return data;
 }
 
@@ -84,7 +85,4 @@ export async function searchSpotify(
   return data;
 }
 
-// Usage example:
-// searchSpotify(token, 'Doxy Miles Davis', 'track,artist')
-//   .then(results => console.log(results))
-//   .catch(error => console.error(error));
+

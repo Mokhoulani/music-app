@@ -1,16 +1,17 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Button,
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { searchSpotify } from "../api/spotify";
 import useSpotifyAuth from "../hooks/useSpotifyAuth";
 import { Search } from "../types/search";
@@ -139,4 +140,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
   },
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+  }
 });
