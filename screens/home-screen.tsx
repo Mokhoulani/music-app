@@ -26,7 +26,6 @@ export default function HomeScreen({ navigation }: Props) {
     const fetchData = async () => {
       if (token) {
         const datTracks = await getTopTracks(token);
-        setTracks(datTracks.items);
 
         // const searchData = await searchSpotify(token);
       }

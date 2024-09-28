@@ -1,9 +1,13 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigatorScreenParams } from "@react-navigation/native";
 import React from "react";
-import ProfileScreen from "../screens/profile-screen";
+import BottomTabNavigator, { TabParamsList } from "./TabNavigator";
 
 export type DrawerParamList = {
-  Profile: undefined;
+  ProfileTab: NavigatorScreenParams<TabParamsList>;
+  HomeTab: NavigatorScreenParams<TabParamsList>;
+  SearchTab: NavigatorScreenParams<TabParamsList>;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
@@ -11,7 +15,30 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 export default function DrawerNavigator() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="Profile" component={ProfileScreen} />
+      <Drawer.Screen
+        name="ProfileTab"
+        component={BottomTabNavigator}
+        options={({ navigation }) => ({
+          drawerLabel: () => (
+            <MaterialIcons
+              style={{ marginRight: 16 }}
+              name="person"
+              size={24}
+              onPress={() => navigation.navigate("Profile")}
+            />
+          ),
+        })}
+      />
+      <Drawer.Screen
+        name="HomeTab"
+        component={BottomTabNavigator}
+        options={{ drawerLabel: () => null }}
+      />
+      <Drawer.Screen
+        name="SearchTab"
+        component={BottomTabNavigator}
+        options={{ drawerLabel: () => null }}
+      />
     </Drawer.Navigator>
   );
 }

@@ -8,9 +8,9 @@ import { DrawerParamList } from "../navigator/DrawerNavigator";
 import { RootStackParamList } from "../navigator/RootStackNavigator";
 import { TabParamsList } from "../navigator/TabNavigator";
 type Props = CompositeScreenProps<
-  DrawerScreenProps<DrawerParamList, "Profile">,
+  BottomTabScreenProps<TabParamsList, "Profile">,
   CompositeScreenProps<
-    BottomTabScreenProps<TabParamsList>,
+    DrawerScreenProps<DrawerParamList>,
     NativeStackScreenProps<RootStackParamList>
   >
 >;
