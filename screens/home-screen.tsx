@@ -1,9 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Sound } from "expo-av/build/Audio";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Button,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -19,55 +17,45 @@ type Props = NativeStackScreenProps<TabParamsList, "Home">;
 
 export default function HomeScreen({ navigation }: Props) {
   const [tracks, setTracks] = useState<Item[]>();
-  const [sound, setSound] = useState<Sound | any>(null);
-  const [token, loading, promptAsync, logout] = useSpotifyAuth();
+  const { accessToken, loading } = useSpotifyAuth();
+  const [loadingTracks, setLoadingTracks] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (token) {
-        const datTracks = await getTopTracks(token);
-        setTracks(datTracks.items);
-
-        // const searchData = await searchSpotify(token);
+      if (accessToken) {
+        setLoadingTracks(true);
+        try {
+          const data = await getTopTracks(accessToken);
+          setTracks(data.items);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoadingTracks(false);
+        }
       }
     };
 
-    fetchData(); // Call the async function
-  }, [token]);
+    fetchData();
+  }, [accessToken]);
 
   return (
-    <SafeAreaView style={{ margin: 40 }}>
-      {loading && !tracks ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : token ? (
-        <Button
-          title="Logout"
-          onPress={() => {
-            logout();
-          }}
-        />
+    <SafeAreaView style={{ flex: 1, padding: 20 }}>
+      {loadingTracks ? (
+        <ActivityIndicator size="large" color="#00ff00" />
       ) : (
-        <Button
-          title="Login with Spotify"
-          onPress={() => {
-            promptAsync();
-          }}
-        />
+        <ScrollView>
+          <Surface>
+            {tracks?.map((item) => (
+              <Pressable
+                key={item.id}
+                onPress={() => navigation.navigate("Details", { item })}
+              >
+                <TrackCard track={item} />
+              </Pressable>
+            ))}
+          </Surface>
+        </ScrollView>
       )}
-
-      <ScrollView>
-        <Surface>
-          {tracks
-            ? tracks.map((item) => (
-                <Pressable
-                  onPress={() => navigation.navigate("Details", { item: item })}
-                >
-                  <TrackCard track={item} />
-                </Pressable>
-              ))
-            : null}
-        </Surface>
-      </ScrollView>
     </SafeAreaView>
   );
 }

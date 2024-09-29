@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Button,
   FlatList,
-  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -28,7 +27,7 @@ export default function SearchScreen() {
   const [searchResults, setSearchResults] = useState<Search | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [token] = useSpotifyAuth();
+  const { accessToken } = useSpotifyAuth();
 
   const {
     control,
@@ -42,7 +41,7 @@ export default function SearchScreen() {
   });
 
   const onSubmit = async (data: SearchFormData) => {
-    if (!token) {
+    if (!accessToken) {
       setError("Not authenticated. Please log in.");
       return;
     }
@@ -52,7 +51,7 @@ export default function SearchScreen() {
 
     try {
       const results = await searchSpotify(
-        token,
+        accessToken,
         data.query,
         "track,artist,album"
       );
@@ -144,5 +143,5 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 10,
-  }
+  },
 });
