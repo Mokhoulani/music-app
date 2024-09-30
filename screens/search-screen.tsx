@@ -5,14 +5,16 @@ import {
   ActivityIndicator,
   Button,
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { Card, Surface } from "react-native-paper";
 import { z } from "zod";
 import { searchSpotify } from "../api/spotify";
-import useSpotifyAuth from "../hooks/useSpotifyAuth";
+import { useAuthContext } from "../provider/AuthProvider";
 import { Search } from "../types/search";
 
 // Define the schema for our form
@@ -26,8 +28,8 @@ type SearchFormData = z.infer<typeof searchSchema>;
 export default function SearchScreen() {
   const [searchResults, setSearchResults] = useState<Search | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { accessToken } = useSpotifyAuth();
+
+  const { accessToken, error } = useAuthContext();
 
   const {
     control,
@@ -42,12 +44,10 @@ export default function SearchScreen() {
 
   const onSubmit = async (data: SearchFormData) => {
     if (!accessToken) {
-      setError("Not authenticated. Please log in.");
       return;
     }
 
     setIsLoading(true);
-    setError(null);
 
     try {
       const results = await searchSpotify(
@@ -57,7 +57,6 @@ export default function SearchScreen() {
       );
       setSearchResults(results);
     } catch (err) {
-      setError("An error occurred while searching. Please try again.");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -65,10 +64,22 @@ export default function SearchScreen() {
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{item.name}</Text>
-      <Text>{item.type}</Text>
-    </View>
+    <Surface>
+      <Card.Title
+        title={item.name}
+        subtitle={item.type}
+        left={() => (
+          <Image
+            width={60}
+            height={60}
+            style={{ marginLeft: -12 }}
+            source={{
+              uri: item.uri,
+            }}
+          />
+        )}
+      />
+    </Surface>
   );
 
   return (
@@ -97,7 +108,7 @@ export default function SearchScreen() {
 
       {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
 
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={styles.error}>{error.message}</Text>}
 
       {searchResults && (
         <FlatList

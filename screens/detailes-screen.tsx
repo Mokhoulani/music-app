@@ -12,3 +12,4 @@ export default function DetailsScreen({ route }: Props) {
     </View>
   );
 }
+

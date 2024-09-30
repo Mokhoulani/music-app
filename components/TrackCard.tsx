@@ -86,19 +86,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 5,
-    backgroundColor: "#000",
     marginRight: 12,
   },
   textContainer: {
     flex: 1,
   },
   trackName: {
-    color: "#000",
     fontSize: 14,
     fontWeight: "bold",
   },
   artistName: {
-    color: "000",
     fontSize: 12,
     opacity: 0.7,
   },

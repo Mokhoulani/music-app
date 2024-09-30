@@ -3,14 +3,12 @@ import { makeRedirectUri, useAuthRequest } from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 
-
 WebBrowser.maybeCompleteAuthSession();
 
-// Storage keys for access token, refresh token, and expiration time
 const STORAGE_KEY = "@SpotifyToken";
 const REFRESH_STORAGE_KEY = "@SpotifyRefreshToken";
 const EXPIRATION_KEY = "@SpotifyTokenExpiration";
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID; // Make sure to use your Spotify client ID
+const CLIENT_ID = "3dff60a9e4374377a72d8980a944aa74";
 
 const SCOPES = [
   "user-read-private",
@@ -35,6 +33,7 @@ const discovery = {
 type SpotifyAuthState = {
   accessToken: string | null;
   refreshToken: string | null;
+  expirationTime: number | null;
   loading: boolean;
   error: Error | null;
 };
@@ -43,14 +42,14 @@ export default function useSpotifyAuth() {
   const [state, setState] = useState<SpotifyAuthState>({
     accessToken: null,
     refreshToken: null,
+    expirationTime: null,
     loading: true,
     error: null,
   });
 
-  // Create the auth request
   const [request, response, promptAsync] = useAuthRequest(
     {
-      clientId: CLIENT_ID!,
+      clientId: CLIENT_ID,
       scopes: SCOPES,
       usePKCE: true,
       redirectUri: makeRedirectUri({
@@ -61,69 +60,86 @@ export default function useSpotifyAuth() {
     discovery
   );
 
-  // Load tokens on app startup
   useEffect(() => {
     loadTokens();
   }, []);
 
-  // Handle the response from Spotify when the user logs in
   useEffect(() => {
     if (response?.type === "success") {
       const { code } = response.params;
       exchangeCodeForToken(code);
+    } else if (response?.type === "error") {
+      setState((prev) => ({
+        ...prev,
+        error: new Error(
+          response.error?.description || "Authentication failed"
+        ),
+        loading: false,
+      }));
     }
   }, [response]);
 
-  // Load stored tokens from AsyncStorage
+  const setLoading = (isLoading: boolean) => {
+    setState((prev) => ({ ...prev, loading: isLoading }));
+  };
+
   const loadTokens = async () => {
+    setLoading(true);
     try {
-      const [accessToken, refreshToken, expirationTimeStr] = await Promise.all([
+      const [accessToken, refreshToken, expirationTime] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEY),
         AsyncStorage.getItem(REFRESH_STORAGE_KEY),
         AsyncStorage.getItem(EXPIRATION_KEY),
       ]);
 
-      const expirationTime = parseInt(expirationTimeStr || "0");
-      const currentTime = new Date().getTime();
-
-      if (expirationTime < currentTime && refreshToken) {
-        // Token expired, refresh it
-        await refreshAccessToken();
+      if (accessToken && refreshToken && expirationTime) {
+        const expirationTimeNum = parseInt(expirationTime, 10);
+        if (Date.now() >= expirationTimeNum) {
+          // Token has expired, refresh it
+          await refreshAccessToken(refreshToken);
+        } else {
+          setState((prev) => ({
+            ...prev,
+            accessToken,
+            refreshToken,
+            expirationTime: expirationTimeNum,
+            loading: false,
+          }));
+        }
       } else {
-        setState((prev) => ({
-          ...prev,
-          accessToken,
-          refreshToken,
-          loading: false,
-        }));
+        setLoading(false);
       }
     } catch (error) {
       setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
 
-  // Save tokens and expiration time to AsyncStorage
   const saveTokens = async (
     accessToken: string,
     refreshToken: string,
     expiresIn: number
   ) => {
-    const expirationTime = new Date().getTime() + expiresIn * 1000; // Calculate expiration time
-
+    const expirationTime = Date.now() + expiresIn * 1000; // Convert expiresIn to milliseconds and add to current time
     try {
       await Promise.all([
         AsyncStorage.setItem(STORAGE_KEY, accessToken),
         AsyncStorage.setItem(REFRESH_STORAGE_KEY, refreshToken),
-        AsyncStorage.setItem(EXPIRATION_KEY, expirationTime.toString()), // Save expiration time
+        AsyncStorage.setItem(EXPIRATION_KEY, expirationTime.toString()),
       ]);
-      setState((prev) => ({ ...prev, accessToken, refreshToken }));
+      setState((prev) => ({
+        ...prev,
+        accessToken,
+        refreshToken,
+        expirationTime,
+        loading: false,
+      }));
     } catch (error) {
-      setState((prev) => ({ ...prev, error: error as Error }));
+      setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
 
-  // Exchange the authorization code for access and refresh tokens
   const exchangeCodeForToken = async (code: string) => {
+    setLoading(true);
     try {
       const tokenResponse = await fetch(
         "https://accounts.spotify.com/api/token",
@@ -136,7 +152,7 @@ export default function useSpotifyAuth() {
             grant_type: "authorization_code",
             code,
             redirect_uri: request!.redirectUri,
-            client_id: CLIENT_ID!,
+            client_id: CLIENT_ID,
             code_verifier: request!.codeVerifier!,
           }).toString(),
         }
@@ -153,12 +169,12 @@ export default function useSpotifyAuth() {
         tokenData.expires_in
       );
     } catch (error) {
-      setState((prev) => ({ ...prev, error: error as Error }));
+      setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
 
-  // Refresh the access token using the refresh token
-  const refreshAccessToken = async () => {
+  const refreshAccessToken = async (refreshToken: string) => {
+    setLoading(true);
     try {
       const tokenResponse = await fetch(
         "https://accounts.spotify.com/api/token",
@@ -169,8 +185,8 @@ export default function useSpotifyAuth() {
           },
           body: new URLSearchParams({
             grant_type: "refresh_token",
-            refresh_token: state.refreshToken!,
-            client_id: CLIENT_ID!,
+            refresh_token: refreshToken,
+            client_id: CLIENT_ID,
           }).toString(),
         }
       );
@@ -182,16 +198,16 @@ export default function useSpotifyAuth() {
       const tokenData = await tokenResponse.json();
       await saveTokens(
         tokenData.access_token,
-        tokenData.refresh_token || state.refreshToken!, // Only save new refresh token if provided
+        tokenData.refresh_token || refreshToken,
         tokenData.expires_in
       );
     } catch (error) {
-      setState((prev) => ({ ...prev, error: error as Error }));
+      setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
 
-  // Log out by clearing tokens from AsyncStorage
   const logout = async () => {
+    setLoading(true);
     try {
       await AsyncStorage.multiRemove([
         STORAGE_KEY,
@@ -201,18 +217,29 @@ export default function useSpotifyAuth() {
       setState({
         accessToken: null,
         refreshToken: null,
+        expirationTime: null,
         loading: false,
         error: null,
       });
     } catch (error) {
-      setState((prev) => ({ ...prev, error: error as Error }));
+      setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
+  };
+
+  const isAuthenticated = () => {
+    return (
+      !!state.accessToken &&
+      !!state.refreshToken &&
+      !!state.expirationTime &&
+      Date.now() < state.expirationTime
+    );
   };
 
   return {
     ...state,
     promptAsync,
     logout,
-    refreshAccessToken,
+    refreshAccessToken: () => refreshAccessToken(state.refreshToken!),
+    isAuthenticated,
   };
 }

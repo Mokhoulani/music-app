@@ -1,7 +1,7 @@
 import React, {
   createContext,
   PropsWithChildren,
-  useCallback,
+  useContext,
   useEffect,
 } from "react";
 import useSpotifyAuth from "../hooks/useSpotifyAuth";
@@ -9,7 +9,10 @@ import useSpotifyAuth from "../hooks/useSpotifyAuth";
 interface AuthContextValue {
   accessToken: string | null;
   refreshToken: string | null;
+  expirationTime: number | null;
   loading: boolean;
+  error: Error | null;
+  isAuthenticated: () => boolean;
   promptAsync: () => void;
   logout: () => Promise<void>;
   refreshAccessToken: () => Promise<void>;
@@ -21,31 +24,28 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   const {
     accessToken,
     refreshToken,
+    expirationTime,
     loading,
+    error,
+    isAuthenticated,
     promptAsync,
     logout,
     refreshAccessToken,
   } = useSpotifyAuth();
 
-  const validateToken = useCallback(async () => {
-    if (accessToken && refreshToken) {
-      try {
-        await refreshAccessToken();
-      } catch (error) {
-        console.error("Failed to refresh token:", error);
-        // Optionally, you could call logout() here if refresh fails
-      }
-    }
-  }, [accessToken, refreshToken, refreshAccessToken]);
-
   useEffect(() => {
-    validateToken();
-  }, [validateToken]);
+    if (!isAuthenticated && refreshToken) {
+      refreshAccessToken();
+    }
+  }, [isAuthenticated, refreshToken]);
 
   const contextValue: AuthContextValue = {
     accessToken,
     refreshToken,
+    expirationTime,
     loading,
+    error,
+    isAuthenticated,
     promptAsync,
     logout,
     refreshAccessToken,
@@ -55,3 +55,5 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
+
+export const useAuthContext = () => useContext(AuthContext);

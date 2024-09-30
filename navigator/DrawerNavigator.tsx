@@ -19,6 +19,7 @@ export default function DrawerNavigator() {
         name="ProfileTab"
         component={BottomTabNavigator}
         options={({ navigation }) => ({
+          title: "",
           drawerLabel: () => (
             <MaterialIcons
               style={{ marginRight: 16 }}

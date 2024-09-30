@@ -1,7 +1,9 @@
 import React from "react";
-import { View, ActivityIndicator, Text, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useAuthContext } from "../provider/AuthProvider";
 
 export default function LoadingScreen() {
+
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="#00ff00" />

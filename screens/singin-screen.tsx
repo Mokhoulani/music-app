@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import useSpotifyAuth from "../hooks/useSpotifyAuth";
+import LoadingScreen from "./loading-screen";
 
 export default function SigninScreen() {
   const { loading, promptAsync } = useSpotifyAuth(); // Access auth functions
