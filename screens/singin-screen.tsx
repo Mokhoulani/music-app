@@ -1,19 +1,40 @@
 import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import useSpotifyAuth from "../hooks/useSpotifyAuth";
-import LoadingScreen from "./loading-screen";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { useAuthContext } from "../provider/AuthProvider";
 
 export default function SigninScreen() {
-  const { loading, promptAsync } = useSpotifyAuth(); // Access auth functions
-  const handleLogin = async () => {
-    await promptAsync(); // Call promptAsync here
-  };
+  const { isAuthenticated, loading, logout, promptAsync } = useAuthContext(); // Access auth functions
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Please log in with Spotify to continue</Text>
-      <Button title="Login with Spotify" onPress={handleLogin} />
-      {/* Use handleLogin */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : isAuthenticated() ? (
+        <Button
+          title="Logout"
+          onPress={() => {
+            logout();
+          }}
+        />
+      ) : (
+        <>
+          <Text style={styles.text}>
+            Please log in with Spotify to continue
+          </Text>
+          <Button
+            title="Login with Spotify"
+            onPress={() => {
+              promptAsync();
+            }}
+          />
+        </>
+      )}
     </View>
   );
 }
@@ -23,11 +44,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
   },
   text: {
     marginBottom: 20,
     fontSize: 22,
-    color: "#000",
   },
 });

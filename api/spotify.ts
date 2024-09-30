@@ -52,14 +52,13 @@ export async function getTopTracks(token: string): Promise<TopTracks> {
     "GET",
     token
   );
-  console.log("Top Tracks:", data);
+
   return data;
 }
 
 // Fetch a current user's profile from Spotify API
 export async function getProfile(token: string): Promise<Profile> {
   const data = await fetchWebApi("v1/me", "GET", token);
-  console.log("Profile:", data);
   return data;
 }
 // Search for a track by name, album or artist name from Spotify API
@@ -88,6 +87,5 @@ export async function searchSpotify(
   }
 
   const data = await response.json();
-  console.log("Search Results:", data);
   return data;
 }

@@ -6,6 +6,7 @@ import HomeScreen from "../screens/home-screen";
 import ProfileScreen from "../screens/profile-screen";
 import SearchScreen from "../screens/search-screen";
 import SettingsScreen from "../screens/setting-screen";
+import SigninScreen from "../screens/singin-screen";
 import { Item } from "../types/track";
 
 export type TabParamsList = {
@@ -13,6 +14,7 @@ export type TabParamsList = {
   Search: undefined;
   Profile: undefined;
   Settings: undefined;
+  Singin: undefined;
   Details: { item: Item };
 };
 
@@ -52,6 +54,11 @@ export default function BottomTabNavigator() {
       <Tab.Screen
         name="Details"
         component={DetailsScreen}
+        options={{ tabBarButton: () => null }}
+      />
+      <Tab.Screen
+        name="Singin"
+        component={SigninScreen}
         options={{ tabBarButton: () => null }}
       />
     </Tab.Navigator>
