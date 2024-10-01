@@ -1,4 +1,4 @@
-export interface Track {
+export interface Tracks {
   tracks: [
     {
       album: {
@@ -79,7 +79,7 @@ export interface Track {
     }
   ];
 }
-export interface Tracks {
+export interface Track {
   album: {
     album_type: "compilation";
     total_tracks: 9;
@@ -156,7 +156,6 @@ export interface Tracks {
   uri: "string";
   is_local: false;
 }
-
 export interface TopTracks {
   href: "https://api.spotify.com/v1/me/shows?offset=0&limit=20";
   limit: 20;

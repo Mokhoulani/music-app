@@ -69,6 +69,7 @@ export default function useSpotifyAuth() {
       const { code } = response.params;
       exchangeCodeForToken(code);
     } else if (response?.type === "error") {
+      logout();
       setState((prev) => ({
         ...prev,
         error: new Error(
@@ -110,6 +111,7 @@ export default function useSpotifyAuth() {
         setLoading(false);
       }
     } catch (error) {
+      logout();
       setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
@@ -134,6 +136,7 @@ export default function useSpotifyAuth() {
         loading: false,
       }));
     } catch (error) {
+      logout();
       setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
@@ -169,6 +172,7 @@ export default function useSpotifyAuth() {
         tokenData.expires_in
       );
     } catch (error) {
+      logout();
       setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
@@ -202,6 +206,7 @@ export default function useSpotifyAuth() {
         tokenData.expires_in
       );
     } catch (error) {
+      logout();
       setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };
@@ -222,6 +227,7 @@ export default function useSpotifyAuth() {
         error: null,
       });
     } catch (error) {
+      logout();
       setState((prev) => ({ ...prev, error: error as Error, loading: false }));
     }
   };

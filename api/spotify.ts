@@ -1,6 +1,7 @@
+import { PlayList } from "../types/playlist";
 import { Profile } from "../types/profile";
 import { Search } from "../types/search";
-import { TopTracks } from "../types/track";
+import { TopTracks, Track } from "../types/track";
 
 // Helper function to make Spotify API requests
 async function fetchWebApi(
@@ -45,6 +46,15 @@ async function fetchWebApi(
   }
 }
 
+export async function getPlayList(
+  token: string,
+  url: string
+): Promise<PlayList> {
+  const data = await fetchWebApi(url, "GET", token);
+
+  return data;
+}
+
 // Fetch user's top tracks from Spotify API
 export async function getTopTracks(token: string): Promise<TopTracks> {
   const data = await fetchWebApi(
@@ -53,6 +63,11 @@ export async function getTopTracks(token: string): Promise<TopTracks> {
     token
   );
 
+  return data;
+}
+//fetch track by id from Spotify API
+export async function getTrack(token: string, url: string): Promise<Track> {
+  const data = await fetchWebApi(url, "Get", token);
   return data;
 }
 

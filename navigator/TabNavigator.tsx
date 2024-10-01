@@ -7,7 +7,6 @@ import ProfileScreen from "../screens/profile-screen";
 import SearchScreen from "../screens/search-screen";
 import SettingsScreen from "../screens/setting-screen";
 import SigninScreen from "../screens/singin-screen";
-import { Item } from "../types/track";
 
 export type TabParamsList = {
   Home: undefined;
@@ -15,7 +14,7 @@ export type TabParamsList = {
   Profile: undefined;
   Settings: undefined;
   Singin: undefined;
-  Details: { item: Item };
+  Details: { id: string };
 };
 
 const Tab = createBottomTabNavigator<TabParamsList>();

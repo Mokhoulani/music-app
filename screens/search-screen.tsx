@@ -15,7 +15,12 @@ import { Card, Surface } from "react-native-paper";
 import { z } from "zod";
 import { searchSpotify } from "../api/spotify";
 import { useAuthContext } from "../provider/AuthProvider";
-import { Search } from "../types/search";
+import {
+  Search,
+  SearchItemAlbum,
+  SearchItemArtist,
+  SearchItemTrack,
+} from "../types/search";
 
 // Define the schema for our form
 const searchSchema = z.object({
@@ -63,24 +68,47 @@ export default function SearchScreen() {
     }
   };
 
-  const renderItem = ({ item }: { item: any }) => (
-    <Surface>
-      <Card.Title
-        title={item.name}
-        subtitle={item.type}
-        left={() => (
-          <Image
-            width={60}
-            height={60}
-            style={{ marginLeft: -12 }}
-            source={{
-              uri: item.uri,
-            }}
-          />
-        )}
-      />
-    </Surface>
-  );
+  const defaultImageUrl =
+    "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228";
+
+  const renderItem = ({
+    item,
+  }: {
+    item: SearchItemTrack | SearchItemArtist | SearchItemAlbum;
+  }) => {
+    const getImageUrl = () => {
+      if (item.type === "track") {
+        return item.album.images[0]?.url || defaultImageUrl;
+      } else if (item.type === "artist") {
+        return item.images?.[0]?.url || defaultImageUrl;
+      } else if (item.type === "album") {
+        return item.images?.[0]?.url || defaultImageUrl;
+      }
+      return defaultImageUrl;
+    };
+
+    return (
+      <Surface>
+        <Card.Title
+          title={item.name}
+          subtitle={item.type}
+          left={() => (
+            <Image
+              width={60}
+              height={60}
+              style={{ marginLeft: -12 }}
+              source={{
+                uri: getImageUrl(),
+              }}
+              onError={(e) =>
+                console.log("Image loading error:", e.nativeEvent.error)
+              }
+            />
+          )}
+        />
+      </Surface>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -140,19 +168,5 @@ const styles = StyleSheet.create({
   error: {
     color: "red",
     marginBottom: 10,
-  },
-  item: {
-    backgroundColor: "#f9c2ff",
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 16,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
   },
 });

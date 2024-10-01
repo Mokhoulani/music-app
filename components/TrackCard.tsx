@@ -2,7 +2,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Audio } from "expo-av";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import useSpotifyAuth from "../hooks/useSpotifyAuth";
 import { Item } from "../types/track";
 import { playSong, stopSong } from "../utils/audioPlayer";
 
@@ -13,7 +12,6 @@ interface Props {
 export default function TrackCard({ track }: Props) {
   const [sound, setSound] = useState<Audio.Sound | any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-
 
   useEffect(() => {
     // Clean up the sound when the component unmounts or sound changes

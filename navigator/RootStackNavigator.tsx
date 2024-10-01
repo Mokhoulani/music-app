@@ -15,9 +15,9 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStackNavigator() {
   const {
-    accessToken,
     loading,
     error,
+    isAuthenticated,
     promptAsync,
     logout,
     refreshAccessToken,
@@ -31,7 +31,11 @@ export default function RootStackNavigator() {
   }
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
-      <RootStack.Screen name="MainNavigator" component={DrawerNavigator} />
+      {isAuthenticated() ? (
+        <RootStack.Screen name="MainNavigator" component={DrawerNavigator} />
+      ) : (
+        <RootStack.Screen name="SigninNavigator" component={SigninScreen} />
+      )}
     </RootStack.Navigator>
   );
 }
