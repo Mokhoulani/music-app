@@ -4,12 +4,15 @@ import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getProfile } from "../api/spotify";
 import { DrawerParamList } from "../navigator/DrawerNavigator";
 import { RootStackParamList } from "../navigator/RootStackNavigator";
 import { TabParamsList } from "../navigator/TabNavigator";
 import { useAuthContext } from "../provider/AuthProvider";
 import { Profile } from "../types/profile";
+
+
 type Props = CompositeScreenProps<
   BottomTabScreenProps<TabParamsList, "Profile">,
   CompositeScreenProps<
@@ -32,7 +35,7 @@ export default function ProfileScreen({ navigation }: Props) {
     fetchData();
   }, []);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.profileHeader}>
         <Text style={styles.displayName}>{profile?.display_name}</Text>
         <Text style={styles.email}>{profile?.email}</Text>
@@ -63,7 +66,7 @@ export default function ProfileScreen({ navigation }: Props) {
           <Text style={styles.spotifyText}>View on Spotify</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

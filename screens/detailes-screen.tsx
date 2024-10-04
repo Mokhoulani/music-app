@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { Surface } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { getPlaylistItem } from "../api/spotify";
 import TrackCard from "../components/TrackCard";
 import { TabParamsList } from "../navigator/TabNavigator";
@@ -30,15 +31,17 @@ export default function DetailsScreen({ route }: Props) {
   }, [tracks]);
 
   return (
-    <ScrollView>
-      {tracks?.map((item) => (
-        <Surface
-          key={item.track.id}
-          style={{ paddingVertical: 16, paddingHorizontal: 20 }}
-        >
-          <TrackCard track={item.track} />
-        </Surface>
-      ))}
-    </ScrollView>
+    <SafeAreaView>
+      <ScrollView>
+        {tracks?.map((item) => (
+          <Surface
+            key={item.track.id}
+            style={{ paddingVertical: 16, paddingHorizontal: 20 }}
+          >
+            <TrackCard track={item.track} />
+          </Surface>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }

@@ -1,14 +1,13 @@
 import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { useAuthContext } from "../provider/AuthProvider";
+import { ActivityIndicator, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoadingScreen() {
-
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ActivityIndicator size="large" color="#00ff00" />
       <Text style={styles.text}>Loading...</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 

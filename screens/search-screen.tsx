@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { Card, Surface } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
 import { searchSpotify } from "../api/spotify";
 
@@ -90,26 +91,28 @@ export default function SearchScreen() {
     };
 
     return (
-      <Surface>
-        {item.type === "track" ? (
-          <TrackCard track={item as Item} />
-        ) : (
-          <Card.Title
-            title={item.name}
-            subtitle={item.type}
-            left={() => (
-              <Image
-                width={60}
-                height={60}
-                style={{ marginLeft: -12 }}
-                source={{
-                  uri: getImageUrl(),
-                }}
-              />
-            )}
-          />
-        )}
-      </Surface>
+      <SafeAreaView>
+        <Surface>
+          {item.type === "track" ? (
+            <TrackCard track={item as Item} />
+          ) : (
+            <Card.Title
+              title={item.name}
+              subtitle={item.type}
+              left={() => (
+                <Image
+                  width={60}
+                  height={60}
+                  style={{ marginLeft: -12 }}
+                  source={{
+                    uri: getImageUrl(),
+                  }}
+                />
+              )}
+            />
+          )}
+        </Surface>
+      </SafeAreaView>
     );
   };
 

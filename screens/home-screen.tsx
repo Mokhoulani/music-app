@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { getPlayList, getProfile, getTopTracks } from "../api/spotify";
 import PlaylistScreen from "../components/PlaylistScreen";
 import { TabParamsList } from "../navigator/TabNavigator";
