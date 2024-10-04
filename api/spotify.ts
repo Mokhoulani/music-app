@@ -25,14 +25,18 @@ async function fetchWebApi(
     }
 
     const res = await fetch(`https://api.spotify.com/${endpoint}`, options);
-
+    if (res.status === 429) {
+      const retryAfter = res.headers.get("Retry-After");
+      console.log(`Rate limited. Retry after ${retryAfter} seconds.`);
+      return;
+    }
+    
     if (!res.ok) {
       // Include status and statusText for more detailed error logging
       throw new Error(
         `Error fetching data from Spotify API: ${res.status} ${res.statusText}`
       );
     }
-
     // Check if the response contains JSON content
     const contentType = res.headers.get("Content-Type");
     if (contentType && contentType.includes("application/json")) {

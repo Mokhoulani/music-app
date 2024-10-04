@@ -1,18 +1,9 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import React, { useEffect, useState } from "react";
-import {
-  Image,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Card, Surface } from "react-native-paper";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { getPlayList, getProfile, getTopTracks } from "../api/spotify";
-import TrackCard from "../components/TrackCard";
+import PlaylistScreen from "../components/PlaylistScreen";
 import { TabParamsList } from "../navigator/TabNavigator";
 import { useAuthContext } from "../provider/AuthProvider";
 import { PlayListItem } from "../types/playlist";
@@ -45,46 +36,19 @@ export default function HomeScreen({ navigation }: Props) {
   }, [accessToken]);
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <Text> Play list</Text>
-        <Surface>
-          {playList?.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => navigation.navigate("Details", { id: item.id })}
-            >
-              <Card.Title
-                title={item.name}
-                subtitle={item.type}
-                left={() => (
-                  <Image
-                    width={60}
-                    height={60}
-                    style={{ marginLeft: -12 }}
-                    source={{
-                      uri: item.images[0].url,
-                    }}
-                  />
-                )}
-              />
-            </TouchableOpacity>
-          ))}
-        </Surface>
-
-        <Text style={{ fontSize: 20 }}>Top tracks</Text>
-        <Surface>
-          {tracks?.map((item) => (
-            <View key={item.id}>
-              <Pressable
-                key={item.id}
-                onPress={() => navigation.navigate("Details", { id: item.id })}
-              ></Pressable>
-              <TrackCard track={item} />
-            </View>
-          ))}
-        </Surface>
-      </ScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <PlaylistScreen
+        playlists={playList}
+        tracks={tracks}
+        navigation={navigation}
+      />
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fafafa",
+  },
+});
