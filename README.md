@@ -51,3 +51,7 @@ I presentationen som bifogas till projektet finns en översikt över de olika ko
 
 - yarn install
 - npm start
+
+### Komplering
+
+- Den kommer jag göra sedan (Appen ska förberedas för lansering till en Appstore)

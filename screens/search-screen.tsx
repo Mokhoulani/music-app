@@ -91,7 +91,7 @@ export default function SearchScreen() {
     };
 
     return (
-      <SafeAreaView>
+      <View>
         <Surface>
           {item.type === "track" ? (
             <TrackCard track={item as Item} />
@@ -112,12 +112,12 @@ export default function SearchScreen() {
             />
           )}
         </Surface>
-      </SafeAreaView>
+      </View>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Controller
         control={control}
         name="query"
@@ -146,6 +146,7 @@ export default function SearchScreen() {
 
       {searchResults && (
         <FlatList
+          style={{ marginTop: 15 }}
           data={[
             ...(searchResults.tracks?.items || []),
             ...(searchResults.artists?.items || []),
@@ -155,7 +156,7 @@ export default function SearchScreen() {
           keyExtractor={(item) => `${item.type}-${item.id}`}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
