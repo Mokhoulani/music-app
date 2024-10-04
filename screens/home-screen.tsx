@@ -1,6 +1,15 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import React, { useEffect, useState } from "react";
-import { Image, Pressable, SafeAreaView, ScrollView, Text } from "react-native";
+import {
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Card, Surface } from "react-native-paper";
 import { getPlayList, getProfile, getTopTracks } from "../api/spotify";
 import TrackCard from "../components/TrackCard";
@@ -41,11 +50,10 @@ export default function HomeScreen({ navigation }: Props) {
         <Text> Play list</Text>
         <Surface>
           {playList?.map((item) => (
-            <>
-              <Pressable
-                key={item.id}
-                onPress={() => navigation.navigate("Details", { id: item.id })}
-              ></Pressable>
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => navigation.navigate("Details", { id: item.id })}
+            >
               <Card.Title
                 title={item.name}
                 subtitle={item.type}
@@ -60,20 +68,20 @@ export default function HomeScreen({ navigation }: Props) {
                   />
                 )}
               />
-            </>
+            </TouchableOpacity>
           ))}
         </Surface>
 
-        <Text>Top tracks</Text>
+        <Text style={{ fontSize: 20 }}>Top tracks</Text>
         <Surface>
           {tracks?.map((item) => (
-            <>
+            <View key={item.id}>
               <Pressable
                 key={item.id}
                 onPress={() => navigation.navigate("Details", { id: item.id })}
               ></Pressable>
               <TrackCard track={item} />
-            </>
+            </View>
           ))}
         </Surface>
       </ScrollView>

@@ -23,16 +23,22 @@ export default function TrackCard({ track }: Props) {
   }, [sound]);
 
   const handleTogglePlay = async () => {
+    if (!currentTrack?.preview_url) {
+      return;
+    }
+
+    // Stop the song if it's already playing
     if (isPlaying) {
       await stopSong(sound);
       setIsPlaying(false);
-    } else {
-      const previewUrl = track.preview_url;
-      if (previewUrl) {
-        const newSound = await playSong(previewUrl);
-        setSound(newSound);
-        setIsPlaying(true);
-      }
+      return;
+    }
+
+    // If a song is not already playing and the item exists, play it
+    if (!isPlaying) {
+      const newSound = await playSong(currentTrack?.preview_url);
+      setSound(newSound);
+      setIsPlaying(true);
     }
   };
 
@@ -56,7 +62,7 @@ export default function TrackCard({ track }: Props) {
           {artistName}
         </Text>
       </View>
-      {currentTrack?.preview_url && (
+      {currentTrack.preview_url && (
         <MaterialIcons
           style={styles.playIcon}
           name={isPlaying ? "pause-circle" : "play-circle"}

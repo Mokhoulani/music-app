@@ -8,7 +8,7 @@ WebBrowser.maybeCompleteAuthSession();
 const STORAGE_KEY = "@SpotifyToken";
 const REFRESH_STORAGE_KEY = "@SpotifyRefreshToken";
 const EXPIRATION_KEY = "@SpotifyTokenExpiration";
-const CLIENT_ID = "3dff60a9e4374377a72d8980a944aa74";
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 
 const SCOPES = [
   "user-read-private",

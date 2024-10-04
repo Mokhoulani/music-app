@@ -1,4 +1,4 @@
-import { PlayList } from "../types/playlist";
+import { PlayList, PlayListTrackItem } from "../types/playlist";
 import { Profile } from "../types/profile";
 import { Search } from "../types/search";
 import { TopTracks, Track } from "../types/track";
@@ -52,6 +52,15 @@ export async function getPlayList(
 ): Promise<PlayList> {
   const data = await fetchWebApi(url, "GET", token);
 
+  return data;
+}
+
+//fetch playlist item from Spotify API
+export async function getPlaylistItem(
+  token: string,
+  url: string
+): Promise<PlayListTrackItem> {
+  const data = await fetchWebApi(url, "GET", token);
   return data;
 }
 

@@ -1,4 +1,6 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Audio } from "expo-av";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -6,6 +8,7 @@ import {
   Button,
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +17,7 @@ import {
 import { Card, Surface } from "react-native-paper";
 import { z } from "zod";
 import { searchSpotify } from "../api/spotify";
+
 import { useAuthContext } from "../provider/AuthProvider";
 import {
   Search,
@@ -21,6 +25,7 @@ import {
   SearchItemArtist,
   SearchItemTrack,
 } from "../types/search";
+import { playSong, stopSong } from "../utils/audioPlayer";
 
 // Define the schema for our form
 const searchSchema = z.object({
@@ -32,9 +37,35 @@ type SearchFormData = z.infer<typeof searchSchema>;
 
 export default function SearchScreen() {
   const [searchResults, setSearchResults] = useState<Search | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
   const { accessToken, error } = useAuthContext();
+  const [isLoading, setIsLoading] = useState(false);
+  const [sound, setSound] = useState<Audio.Sound | any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleTogglePlay = async (previewUrl: string | null) => {
+    if (!previewUrl) {
+      return;
+    }
+
+    // Stop the song if it's already playing
+    if (isPlaying) {
+      console.log("Stopping current song");
+      await stopSong(sound);
+      setIsPlaying(false);
+
+      return;
+    }
+
+    // If a song is not already playing and the item exists, play it
+    if (!isPlaying) {
+      if (isLoading) {
+        return;
+      }
+      const newSound = await playSong(previewUrl);
+      setSound(newSound);
+      setIsPlaying(true);
+    }
+  };
 
   const {
     control,
@@ -86,6 +117,12 @@ export default function SearchScreen() {
       }
       return defaultImageUrl;
     };
+    const getPreviewUrl = () => {
+      if (item.type === "track") {
+        return item.preview_url;
+      }
+      return null;
+    };
 
     return (
       <Surface>
@@ -100,11 +137,20 @@ export default function SearchScreen() {
               source={{
                 uri: getImageUrl(),
               }}
-              onError={(e) =>
-                console.log("Image loading error:", e.nativeEvent.error)
-              }
             />
           )}
+          right={() =>
+            item.type !== "track" ? (
+              <></>
+            ) : (
+              <Pressable onPress={() => handleTogglePlay(getPreviewUrl())}>
+                <MaterialIcons
+                  name={isPlaying ? "pause-circle" : "play-circle"}
+                  size={24}
+                />
+              </Pressable>
+            )
+          }
         />
       </Surface>
     );
