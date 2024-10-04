@@ -15,6 +15,7 @@ Denna app hämtar data från Spotify Web API. Användare kan logga in med sitt S
 ## React Native och Expo-komponenter
 
 Detta projekt använder följande komponenter från React Native och Expo:
+I presentationen som bifogas till projektet finns en översikt över de olika komponenterna.
 
 ### React Native-komponenter
 
@@ -41,7 +42,7 @@ Detta projekt använder följande komponenter från React Native och Expo:
 
 ## Externa Moduler
 
-- **react-hook-form:** 
+- **react-hook-form:**
 - **Zod:**
 
 ## Bygg och kör projektet
