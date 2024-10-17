@@ -13,8 +13,8 @@ interface ContextValue {
 export const ThemeContext = createContext({} as ContextValue);
 
 export default function ThemeProvider({ children }: PropsWithChildren) {
-  const colorScheme = useColorScheme();
   const [colorMode, setColorMode] = useState<"light" | "dark" | "auto">("auto");
+  const colorScheme = useColorScheme();
 
   const theme =
     colorMode === "dark" || (colorMode === "auto" && colorScheme === "dark")
