@@ -49,7 +49,7 @@ I presentationen som bifogas till projektet finns en översikt över de olika ko
 
 ### Krav
 
-- yarn install
+- npm install
 - npm start
 
 ### Komplering

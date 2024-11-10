@@ -10,10 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
-      "extra": {
-        "SPOTIFY_CLIENT_ID": "3dff60a9e4374377a72d8980a944aa74"
-      }
+      "backgroundColor": "#6200EA"
     },
     "ios": {
       "supportsTablet": true
@@ -21,8 +18,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#6200EA"
+      },
+      "package": "com.mokhoulani.musicapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +28,8 @@
     "extra": {
       "eas": {
         "projectId": "fb239023-56d2-4ddc-a755-11a0a40c469d"
-      }
+      },
+      "SPOTIFY_CLIENT_ID": "3dff60a9e4374377a72d8980a944aa74"
     }
   }
 }
